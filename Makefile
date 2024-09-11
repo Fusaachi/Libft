@@ -6,45 +6,51 @@
 #    By: pgiroux <pgiroux@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/05/22 17:00:17 by pgiroux           #+#    #+#              #
-#    Updated: 2024/07/29 10:42:17 by pgiroux          ###   ########.fr        #
+#    Updated: 2024/09/11 14:06:48 by pgiroux          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = libft.a
 
-SRC =	$(addprefix src/, ft_bzero.c ft_isalnum.c ft_isalpha.c ft_isascii.c ft_isprint.c ft_memcmp.c ft_memmove.c ft_strchr.c ft_strlen.c ft_strnstr.c ft_tolower.c ft_isdigit.c ft_memchr.c ft_memcpy.c ft_memset.c ft_strlcpy.c ft_strncmp.c ft_strrchr.c ft_toupper.c ft_strlcat.c ft_atoi.c ft_calloc.c ft_strdup.c ft_substr.c ft_strjoin.c ft_strtrim.c ft_split.c ft_itoa.c ft_strmapi.c ft_striteri.c ft_putchar_fd.c ft_putstr_fd.c ft_putendl_fd.c ft_putnbr_fd.c)
-	
-BONUS = $(addprefix src_bonus/, ft_lstnew_bonus.c ft_lstadd_front_bonus.c ft_lstsize_bonus.c ft_lstlast_bonus.c ft_lstadd_back_bonus.c ft_lstdelone_bonus.c ft_lstclear_bonus.c ft_lstiter_bonus.c ft_lstmap_bonus.c)
-
-SRCS_OBJ = $(SRC:.c=.o)
-
-BONUSS_OBJ = $(BONUS:.c=.o)
-
-HEADER_DIR =./
-
 CC = cc
 
 CFLAGS = -Wall -Wextra -Werror
 
+FILE =	ft_bzero ft_isalnum ft_isalpha ft_isascii ft_isprint ft_memcmp ft_memmove ft_strchr ft_strlen ft_strnstr ft_tolower ft_isdigit ft_memchr ft_memcpy ft_memset ft_strlcpy ft_strncmp ft_strrchr ft_toupper ft_strlcat ft_atoi ft_calloc ft_strdup ft_substr ft_strjoin ft_strtrim ft_split ft_itoa ft_strmapi ft_striteri ft_putchar_fd ft_putstr_fd ft_putnbr_fd ft_putendl_fd
 
+FILE_BONUS = ft_lstnew_bonus ft_lstadd_front_bonus ft_lstsize_bonus ft_lstlast_bonus ft_lstadd_back_bonus ft_lstdelone_bonus ft_lstclear_bonus ft_lstiter_bonus ft_lstmap_bonus
 
-all: $(NAME)
+FILE_DIR = ./src/
+BONUS_DIR = ./src_bonus/
+OBJ_DIR = ./obj/
 
-.c.o:
-	${CC} ${CFLAGS} -I ${HEADER_DIR} -c $< -o ${<:.c=.o}
+FILES = $(addprefix $(FILE_DIR), $(addsuffix .c, $(FILE)))
+OBJS = $(addprefix $(OBJ_DIR), $(addsuffix .o, $(FILE)))
 
-$(NAME) : $(SRCS_OBJ)
-	ar rc $(NAME) $(SRCS_OBJ)
+FILES_BONUS = $(addprefix $(BONUS_DIR), $(addsuffix .c, $(FILE_BONUS)))
+OBJS_BONUS = $(addprefix $(OBJ_DIR), $(addsuffix .o, $(FILE_BONUS)))
 
-bonus : $(BONUSS_OBJ)
-	ar rc $(NAME) $(BONUSS_OBJ)
+all : $(NAME)
 
+$(OBJ_DIR)%.o: $(FILE_DIR)%.c
+	@mkdir -p $(OBJ_DIR)
+	@$(CC) $(CFLAGS) -c -o $@ $<
+
+$(OBJ_DIR)%.o: $(BONUS_DIR)%.c
+	@$(CC) $(CFLAGS) -c -o $@ $<
+	
+
+$(NAME) : $(OBJS) $(OBJS_BONUS)
+	ar rc $(NAME) $(OBJS)
+	ar rc $(NAME) $(OBJS_BONUS)
+	
 clean :
-	rm -f $(SRCS_OBJ) $(BONUSS_OBJ)
+	rm -rf $(OBJ_DIR) 
 
 fclean : clean
-	rm -f $(NAME)
+	rm -rf $(NAME)
 
 re : fclean all
+	make
 
 .PHONY : all clean fclean re
